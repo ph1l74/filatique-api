@@ -1,0 +1,55 @@
+services:
+  ph1l74-api-db:
+    image: postgres:16
+    container_name: ph1l74-api-db
+    command:
+      - "postgres"
+      - "-c"
+      - "config_file=/etc/postgresql.conf"
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    env_file:
+      - .env
+    volumes:
+      - ../2. Init Database:/docker-entrypoint-initdb.d
+      - ph1l74-api-db-data:/var/lib/postgresql/data
+      - ./postgresql.conf:/etc/postgresql.conf
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.db:172.18.0.1"
+      - "host.docker.pgadmin:172.18.0.2"
+
+  ph1l74-api-pgadmin:
+    image: dpage/pgadmin4
+    container_name: ph1l74-api-pgadmin
+    depends_on:
+      - ph1l74-api-db
+    ports:
+      - "5555:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+    volumes:
+      - ph1l74-api-pgadmin-data:/var/lib/pgadmin
+    restart: unless-stopped
+
+  payload:
+    container_name: ph1l74-api-payload
+    image: node:18-alpine
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/home/node/app
+      - node_modules:/home/node/app/node_modules
+    working_dir: /home/node/app/
+    command: sh -c "yarn install && yarn dev"
+    depends_on:
+      - ph1l74-api-db
+      - ph1l74-api-pgadmin
+    env_file:
+      - .env
+
+volumes:
+  ph1l74-api-db-data:
+  ph1l74-api-pgadmin-data:
+  node_modules:
