@@ -15,8 +15,19 @@ That project was made just to practice in API creation. Filatique API was made t
 
 ### Data Structure
 
-- 
+- Media Collections
+  - Covers
+  - ServiceImages
 
+- Collections 
+  - Press
+  - Services (dep to ServiceImages)
+  - Releases (dep to Services, Covers)
+
+- Service Collections
+  - Users
+  
+  
 ### .env
 
 ```
@@ -58,4 +69,4 @@ DATABASE_URI=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@172.18.0.1:${POSTG
 
 ### TODO
 
-[-] Check GET methods
+- [ ] Check GET methods

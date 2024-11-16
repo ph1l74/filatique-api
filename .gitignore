@@ -1,7 +1,9 @@
 build
 dist
 /media
+src/media
 /images
+src/images
 node_modules
 .DS_Store
 .env
